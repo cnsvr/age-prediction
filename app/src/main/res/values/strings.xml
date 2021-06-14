@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AgePrediction</string>
+    <string name="takePicture">Take Picture</string>
+</resources>
