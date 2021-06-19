@@ -3,8 +3,10 @@ package com.example.ageprediction
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -14,8 +16,10 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import java.io.File
+
 
 private const val FILE_NAME = "photo.jpg"
 private lateinit var photoFile: File
@@ -57,8 +61,20 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
+            val ei = ExifInterface(photoFile.absolutePath)
+            val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
 
-            imageView.setImageBitmap(takenImage)
+            // Rotation
+            var rotatedBitmap: Bitmap? = null
+            rotatedBitmap = when (orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(takenImage, 90F)
+                ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(takenImage, 180F)
+                ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(takenImage, 270F)
+                ExifInterface.ORIENTATION_NORMAL -> takenImage
+                else -> takenImage
+            }
+
+            imageView.setImageBitmap(rotatedBitmap)
         }
     }
 
@@ -67,4 +83,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(fileName, ".jpg", storageDirectory)
     }
+
+    private fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(
+            source, 0, 0, source.width, source.height,
+            matrix, true
+        )
+    }
+
 }
