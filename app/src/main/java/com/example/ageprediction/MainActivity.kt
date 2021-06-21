@@ -16,6 +16,7 @@ import android.provider.MediaStore
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         if (result.resultCode == Activity.RESULT_OK) {
             val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
             val ei = ExifInterface(photoFile.absolutePath)
-            val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+            val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
 
             // Rotation
             var rotatedBitmap: Bitmap? = null
@@ -83,15 +84,59 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             val analysebutton = findViewById(R.id.analysebutton) as Button
             analysebutton.setVisibility(View.VISIBLE);
             analysebutton.setOnClickListener {
-                Toast.makeText(this@MainActivity, "You clicked me.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "Analyzing is started.", Toast.LENGTH_SHORT).show()
                 this.startAnalyze()
             }
         }
     }
     fun startAnalyze() {
-        System.out.println("Win Alert is called")
+        System.out.println("We found the result")
+        this.showResult(12)
+    }
+
+    fun showResult(age: Int){
         dialog!!.setContentView(R.layout.activity_result)
         dialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val boyImage: ImageView = this.dialog!!.findViewById<ImageView>(R.id.boyImage)
+        val girlImage: ImageView = this.dialog!!.findViewById<ImageView>(R.id.girlImage)
+        val ageText: TextView = this.dialog!!.findViewById<TextView>(R.id.ageText)
+
+        if (age <= 2){
+            boyImage.setImageResource(R.drawable.firstboy);
+            girlImage.setImageResource(R.drawable.firstgirl);
+            ageText.text = "Your age grup is : 1-2 "
+        }else if (age <= 9){
+            boyImage.setImageResource(R.drawable.secondboy);
+            girlImage.setImageResource(R.drawable.secondgirl);
+            ageText.text = "Your age grup is : 3-9 "
+        }
+        else if (age <= 20){
+            boyImage.setImageResource(R.drawable.thirdboy);
+            girlImage.setImageResource(R.drawable.thirdgirl);
+            ageText.text = "Your age grup is : 10-20 "
+        }
+        else if (age <= 27){
+            boyImage.setImageResource(R.drawable.forthboy);
+            girlImage.setImageResource(R.drawable.forthgirl);
+            ageText.text = "Your age grup is : 21-27 "
+        }
+        else if (age <= 45){
+            boyImage.setImageResource(R.drawable.fifthboy);
+            girlImage.setImageResource(R.drawable.fifthgirl);
+            ageText.text = "Your age grup is : 28-45 "
+        }
+        else if (age <= 65){
+            boyImage.setImageResource(R.drawable.sixthboy);
+            girlImage.setImageResource(R.drawable.sixthgirl);
+            ageText.text = "Your age grup is : 46-65 "
+        }else{
+            boyImage.setImageResource(R.drawable.lastboy);
+            girlImage.setImageResource(R.drawable.lastwomen);
+            ageText.text = "Your age grup is : +65 "
+        }
+        System.out.println("Win Alert is called")
+
 
         val btnOk:Button = this.dialog!!.findViewById<Button>(R.id.btnOK)
 
@@ -100,6 +145,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         })
         dialog!!.show()
     }
+
 
     private fun getPhotoFile(fileName: String): File {
         // Use `getExternalFilesDir` on Context to access package-specific directories.

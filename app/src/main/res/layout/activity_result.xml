@@ -4,7 +4,8 @@
     android:layout_width="350dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    tools:context=".MainActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -21,17 +22,19 @@
 
 
             <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="164dp"
-                android:layout_height="169dp"
+                android:id="@+id/boyImage"
+                android:layout_width="126dp"
+                android:layout_height="136dp"
                 app:layout_constraintBottom_toTopOf="@+id/winnerText"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/girlImage"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/young" />
 
             <TextView
-                android:id="@+id/winnerText"
+                android:id="@+id/ageText"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:gravity="center"
@@ -41,7 +44,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+                app:layout_constraintTop_toBottomOf="@+id/boyImage" />
 
             <Button
                 android:id="@+id/btnOK"
@@ -60,6 +63,17 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/winnerText" />
+
+            <ImageView
+                android:id="@+id/girlImage"
+                android:layout_width="110dp"
+                android:layout_height="97dp"
+                android:src="@drawable/oldg"
+                app:layout_constraintBottom_toTopOf="@+id/ageText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/boyImage"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
