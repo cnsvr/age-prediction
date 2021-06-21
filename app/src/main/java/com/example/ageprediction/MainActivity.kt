@@ -2,10 +2,13 @@ package com.example.ageprediction
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.Matrix
+import android.graphics.drawable.ColorDrawable
 import android.media.ExifInterface
 import android.os.Bundle
 import android.os.Environment
@@ -27,7 +30,7 @@ private lateinit var photoFile: File
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var btnTakePicture : Button
     private lateinit var imageView: ImageView
-
+    var dialog: Dialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,7 +38,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         btnTakePicture = findViewById(R.id.btnTakePicture)
         imageView = findViewById(R.id.imageView)
         btnTakePicture.setOnClickListener(this)
-
+        this.dialog = Dialog(this)
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -50,6 +53,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
                 if (takePictureIntent.resolveActivity(this.packageManager) != null) {
                     startForResult.launch(takePictureIntent)
+                    println("HAHAHAHAHAHAHAHA")
+
                 } else {
                     Toast.makeText(this, "Unable to open camera", Toast.LENGTH_SHORT).show()
                 }
@@ -75,7 +80,25 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             imageView.setImageBitmap(rotatedBitmap)
+            val analysebutton = findViewById(R.id.analysebutton) as Button
+            analysebutton.setVisibility(View.VISIBLE);
+            analysebutton.setOnClickListener {
+                Toast.makeText(this@MainActivity, "You clicked me.", Toast.LENGTH_SHORT).show()
+                this.startAnalyze()
+            }
         }
+    }
+    fun startAnalyze() {
+        System.out.println("Win Alert is called")
+        dialog!!.setContentView(R.layout.activity_result)
+        dialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val btnOk:Button = this.dialog!!.findViewById<Button>(R.id.btnOK)
+
+        btnOk.setOnClickListener(View.OnClickListener () {
+            dialog!!.dismiss()
+        })
+        dialog!!.show()
     }
 
     private fun getPhotoFile(fileName: String): File {
