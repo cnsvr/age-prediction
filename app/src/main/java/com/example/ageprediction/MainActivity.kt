@@ -23,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.FileDataPart
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -107,47 +108,38 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             analysebutton.setVisibility(View.VISIBLE);
             analysebutton.setOnClickListener {
                 Toast.makeText(this@MainActivity, "Analyzing is started.", Toast.LENGTH_SHORT).show()
-                var path = photoFile.absolutePath + File.separator + "theimage"
+
 
                 startAnalyze()
             }
         }
     }
 
+    fun startAnalyze(){
+        var resultInterval: String = ""
+         var job = thread {
+            val file = FileDataPart.from(photoFile.absolutePath , name = "image")
+            Fuel.upload("http://192.168.1.39:5000/send_image")
+                .add(file)
+                .response { _, response, result ->
 
-    fun startAnalyze() {
-        val stream = ByteArrayOutputStream()
-        rotatedBitmap?.compress(Bitmap.CompressFormat.PNG, 99, stream)
-        val image = stream.toByteArray()
-        System.out.println("image length : "+image.size)
-        val encodedImage = String(image)
-        val map = HashMap<String, String>()
-
-        map.put("image_byte_array", encodedImage)
-        val msg:String = JSONObject(map as Map<*, *>).toString()
-        var result:String = ""
-        val job = thread {
-
-            Fuel.post("http://3.17.70.149:5000/send_image")
-                .body(
-                    msg
-                ).response { request, response, result ->
-                    println(request)
-                    println(response.body())
-
+                    println("response.body "+response.body())
                     val (bytes, error) = result
                     if (bytes != null) {
                         println("[response bytes] ${String(bytes)}")
-                        showResult(String(bytes))
+                        resultInterval = String(bytes)
+                        showResult(resultInterval)
                     }
                 }
         }
-
+             job.join()
 
     }
 
 
+
     fun showResult(age: String){
+        System.out.println("show result : "+age)
         dialog!!.setContentView(R.layout.activity_result)
         dialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
